@@ -5,6 +5,7 @@ import (
 
 	"github.com/KnBrBz/snippet-swagger/api"
 	"github.com/KnBrBz/snippet-swagger/api/middleware"
+	"github.com/KnBrBz/snippet-swagger/api/model"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 )
@@ -34,6 +35,7 @@ func Init(r *gin.Engine) {
 // @Produce  json
 // @Success 200 {object} Posts
 // @Router /api/v1/endpoint/{id} [get]
+// @Param Authorization header string true "Bearer token"
 func getAll(c *gin.Context) {
 	code, data := allByFilter(NewFilter(c.Param(ParamID), c.Request.URL.Query()))
 
@@ -68,18 +70,19 @@ func allByFilter(filter Filter) (int, []Post) {
 // @Accept json
 // @Produce  json
 // @Param entity body Post true "create entity"
-// @Success 200 {object} Success
-// @Failure 400 {object} Success
+// @Success 200 {object} model.Success
+// @Failure 400 {object} model.Success
 // @Router /api/v1/endpoint [post]
+// @Param Authorization header string true "Bearer token"
 func post(c *gin.Context) {
 	var t Post
 
 	if err := c.ShouldBindWith(&t, binding.JSON); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest})
+		c.JSON(http.StatusBadRequest, model.Success{Code: http.StatusBadRequest})
 		return
 	}
 
-	c.JSON(http.StatusOK, Success{
+	c.JSON(http.StatusOK, model.Success{
 		Code: http.StatusOK,
 	})
 }
@@ -92,14 +95,15 @@ func post(c *gin.Context) {
 // @Accept json
 // @Produce  json
 // @Param entity body Post true "update entity"
-// @Success 200 {object} Success
-// @Failure 400 {object} Success
+// @Success 200 {object} model.Success
+// @Failure 400 {object} model.Success
 // @Router /api/v1/endpoint/{id} [put]
+// @Param Authorization header string true "Bearer token"
 func update(c *gin.Context) {
 	var t Post
 
 	if err := c.ShouldBindWith(&t, binding.JSON); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest})
+		c.JSON(http.StatusBadRequest, model.Success{Code: http.StatusBadRequest})
 		return
 	}
 
@@ -130,20 +134,18 @@ func updateByID(id string, t Post) (int, gin.H) {
 // @Param id path int true  "Entity ID"
 // @Tags entity
 // @Produce  json
-// @Success 200 {object} Success
+// @Success 200 {object} model.Success
+// @Failure 400 {object} model.Success
 // @Router /api/v1/endpoint/{id} [delete]
+// @Param Authorization header string true "Bearer token"
 func del(c *gin.Context) {
 	c.JSON(deleteByID(c.Param(ParamID)))
 }
 
-func deleteByID(id string) (int, gin.H) {
+func deleteByID(id string) (int, model.Success) {
 	if len(id) == 0 {
-		return http.StatusBadRequest, gin.H{
-			"code": http.StatusBadRequest,
-		}
+		return http.StatusBadRequest, model.Success{Code: http.StatusBadRequest}
 	}
 
-	return http.StatusOK, gin.H{
-		"code": http.StatusOK,
-	}
+	return http.StatusOK, model.Success{Code: http.StatusOK}
 }

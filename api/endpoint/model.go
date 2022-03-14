@@ -30,7 +30,3 @@ type Posts struct {
 
 	Code int `json:"code"`
 }
-
-type Success struct {
-	Code int `json:"code"`
-}

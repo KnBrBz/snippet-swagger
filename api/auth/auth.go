@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/KnBrBz/snippet-swagger/api"
+	"github.com/KnBrBz/snippet-swagger/api/model"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/pkg/errors"
@@ -18,6 +19,15 @@ func Init(r *gin.Engine) {
 	v.POST("/", getToken)
 }
 
+// getToken is the handler of token generation
+// @Summary Token
+// @Description get token
+// @Param authData body Auth true  "Login, Password"
+// @Tags authorization
+// @Produce  json
+// @Success 200 {object} AuthSuccess
+// @Failure 400 {object} model.Success
+// @Router /api/v1/auth [post]
 func getToken(c *gin.Context) {
 	const funcTitle = packageTitle + "getToken"
 
@@ -25,15 +35,15 @@ func getToken(c *gin.Context) {
 
 	if err := c.ShouldBindWith(&t, binding.JSON); err != nil {
 		log.Println(errors.Wrap(err, funcTitle))
-		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest})
+		c.JSON(http.StatusBadRequest, model.Success{Code: http.StatusBadRequest})
 
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": http.StatusOK,
-		"data": gin.H{
-			"token": "some_token",
+		"data": AuthSuccess{
+			Token: "some_token",
 		},
 	})
 }

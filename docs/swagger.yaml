@@ -1,4 +1,16 @@
 definitions:
+  auth.Auth:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
+  auth.AuthSuccess:
+    properties:
+      token:
+        type: string
+    type: object
   endpoint.Post:
     properties:
       alias:
@@ -15,7 +27,7 @@ definitions:
           $ref: '#/definitions/endpoint.Post'
         type: array
     type: object
-  endpoint.Success:
+  model.Success:
     properties:
       code:
         type: integer
@@ -23,6 +35,30 @@ definitions:
 info:
   contact: {}
 paths:
+  /api/v1/auth:
+    post:
+      description: get token
+      parameters:
+      - description: Login, Password
+        in: body
+        name: authData
+        required: true
+        schema:
+          $ref: '#/definitions/auth.Auth'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.AuthSuccess'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Success'
+      summary: Token
+      tags:
+      - authorization
   /api/v1/endpoint:
     post:
       consumes:
@@ -35,17 +71,22 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/endpoint.Post'
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/endpoint.Success'
+            $ref: '#/definitions/model.Success'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/endpoint.Success'
+            $ref: '#/definitions/model.Success'
       summary: Post
       tags:
       - entity
@@ -58,13 +99,22 @@ paths:
         name: id
         required: true
         type: integer
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/endpoint.Success'
+            $ref: '#/definitions/model.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Success'
       summary: Delete
       tags:
       - entity
@@ -75,6 +125,11 @@ paths:
         in: path
         name: id
         type: integer
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -101,17 +156,22 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/endpoint.Post'
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/endpoint.Success'
+            $ref: '#/definitions/model.Success'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/endpoint.Success'
+            $ref: '#/definitions/model.Success'
       summary: Update
       tags:
       - entity

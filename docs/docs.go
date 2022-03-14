@@ -16,6 +16,43 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/auth": {
+            "post": {
+                "description": "get token",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "authorization"
+                ],
+                "summary": "Token",
+                "parameters": [
+                    {
+                        "description": "Login, Password",
+                        "name": "authData",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.Auth"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/auth.AuthSuccess"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.Success"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/endpoint": {
             "post": {
                 "description": "Post entity",
@@ -38,19 +75,26 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/endpoint.Post"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/endpoint.Success"
+                            "$ref": "#/definitions/model.Success"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/endpoint.Success"
+                            "$ref": "#/definitions/model.Success"
                         }
                     }
                 }
@@ -72,6 +116,13 @@ const docTemplate = `{
                         "description": "Entity ID",
                         "name": "id",
                         "in": "path"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -111,19 +162,26 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/endpoint.Post"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/endpoint.Success"
+                            "$ref": "#/definitions/model.Success"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/endpoint.Success"
+                            "$ref": "#/definitions/model.Success"
                         }
                     }
                 }
@@ -144,13 +202,26 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/endpoint.Success"
+                            "$ref": "#/definitions/model.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.Success"
                         }
                     }
                 }
@@ -158,6 +229,25 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "auth.Auth": {
+            "type": "object",
+            "properties": {
+                "login": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "auth.AuthSuccess": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
         "endpoint.Post": {
             "type": "object",
             "properties": {
@@ -183,7 +273,7 @@ const docTemplate = `{
                 }
             }
         },
-        "endpoint.Success": {
+        "model.Success": {
             "type": "object",
             "properties": {
                 "code": {
