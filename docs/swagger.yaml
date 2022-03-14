@@ -1,0 +1,118 @@
+definitions:
+  endpoint.Post:
+    properties:
+      alias:
+        type: string
+      name:
+        type: string
+    type: object
+  endpoint.Posts:
+    properties:
+      code:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/endpoint.Post'
+        type: array
+    type: object
+  endpoint.Success:
+    properties:
+      code:
+        type: integer
+    type: object
+info:
+  contact: {}
+paths:
+  /api/v1/endpoint:
+    post:
+      consumes:
+      - application/json
+      description: Post entity
+      parameters:
+      - description: create entity
+        in: body
+        name: entity
+        required: true
+        schema:
+          $ref: '#/definitions/endpoint.Post'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/endpoint.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/endpoint.Success'
+      summary: Post
+      tags:
+      - entity
+  /api/v1/endpoint/{id}:
+    delete:
+      description: delete entity
+      parameters:
+      - description: Entity ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/endpoint.Success'
+      summary: Delete
+      tags:
+      - entity
+    get:
+      description: get all entities
+      parameters:
+      - description: Entity ID
+        in: path
+        name: id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/endpoint.Posts'
+      summary: Get All
+      tags:
+      - entities
+    put:
+      consumes:
+      - application/json
+      description: update entity
+      parameters:
+      - description: Entity ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: update entity
+        in: body
+        name: entity
+        required: true
+        schema:
+          $ref: '#/definitions/endpoint.Post'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/endpoint.Success'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/endpoint.Success'
+      summary: Update
+      tags:
+      - entity
+swagger: "2.0"

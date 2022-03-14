@@ -26,6 +26,14 @@ func Init(r *gin.Engine) {
 	v.DELETE("/:"+ParamID, middleware.Auth, del)
 }
 
+// getAll is the handler of all entities
+// @Summary Get All
+// @Description get all entities
+// @Param id path int false  "Entity ID"
+// @Tags entities
+// @Produce  json
+// @Success 200 {object} Posts
+// @Router /api/v1/endpoint/{id} [get]
 func getAll(c *gin.Context) {
 	code, data := allByFilter(NewFilter(c.Param(ParamID), c.Request.URL.Query()))
 
@@ -35,24 +43,34 @@ func getAll(c *gin.Context) {
 	})
 }
 
-func allByFilter(filter Filter) (int, []gin.H) {
-	data := make([]gin.H, 0)
+func allByFilter(filter Filter) (int, []Post) {
+	data := make([]Post, 0)
 
-	data = append(data, gin.H{
-		"name":  "foo",
-		"alias": "bar",
+	data = append(data, Post{
+		Name:  "foo",
+		Alias: "bar",
 	})
 
 	if len(filter.id) == 0 {
-		data = append(data, gin.H{
-			"name":  "bar",
-			"alias": "baz",
+		data = append(data, Post{
+			Name:  "bar",
+			Alias: "baz",
 		})
 	}
 
 	return http.StatusOK, data
 }
 
+// post is the handler of creating an entity
+// @Summary Post
+// @Description Post entity
+// @Tags entity
+// @Accept json
+// @Produce  json
+// @Param entity body Post true "create entity"
+// @Success 200 {object} Success
+// @Failure 400 {object} Success
+// @Router /api/v1/endpoint [post]
 func post(c *gin.Context) {
 	var t Post
 
@@ -61,11 +79,22 @@ func post(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code": http.StatusOK,
+	c.JSON(http.StatusOK, Success{
+		Code: http.StatusOK,
 	})
 }
 
+// update is the handler of updating entity
+// @Summary Update
+// @Description update entity
+// @Param id path int true  "Entity ID"
+// @Tags entity
+// @Accept json
+// @Produce  json
+// @Param entity body Post true "update entity"
+// @Success 200 {object} Success
+// @Failure 400 {object} Success
+// @Router /api/v1/endpoint/{id} [put]
 func update(c *gin.Context) {
 	var t Post
 
@@ -95,6 +124,14 @@ func updateByID(id string, t Post) (int, gin.H) {
 	}
 }
 
+// delete is the handler of deleting entity
+// @Summary Delete
+// @Description delete entity
+// @Param id path int true  "Entity ID"
+// @Tags entity
+// @Produce  json
+// @Success 200 {object} Success
+// @Router /api/v1/endpoint/{id} [delete]
 func del(c *gin.Context) {
 	c.JSON(deleteByID(c.Param(ParamID)))
 }

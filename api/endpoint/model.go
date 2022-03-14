@@ -24,3 +24,13 @@ type Post struct {
 	Name  string `json:"name"`
 	Alias string `json:"alias"`
 }
+
+type Posts struct {
+	Data []Post `json:"data"`
+
+	Code int `json:"code"`
+}
+
+type Success struct {
+	Code int `json:"code"`
+}
